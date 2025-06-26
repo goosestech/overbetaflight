@@ -762,6 +762,9 @@ FAST_CODE_NOINLINE void mixTable(timeUs_t currentTimeUs)
         applyRpmLimiter(&mixerRuntime);
     }
 #endif
+    // TODO: these should come through from RC like throttle
+    float throttle_x_sp = 0.0f;
+    float throttle_y_sp = 0.0f;
 
     // Find roll/pitch/yaw desired output
     // ??? Where is the optimal location for this code?
@@ -771,7 +774,9 @@ FAST_CODE_NOINLINE void mixTable(timeUs_t currentTimeUs)
         float mix =
             scaledAxisPidRoll  * activeMixer[i].roll +
             scaledAxisPidPitch * activeMixer[i].pitch +
-            scaledAxisPidYaw   * activeMixer[i].yaw;
+            scaledAxisPidYaw   * activeMixer[i].yaw +
+            throttle_x_sp      * activeMixer[i].throttle_x +
+            throttle_y_sp      * activeMixer[i].throttle_y;
 
         if (mix > motorMixMax) {
             motorMixMax = mix;
