@@ -54,8 +54,8 @@ const uint8_t hidChannelMapping[] = {
     AUX8,     // Button 4
     AUX9,     // Button 5
     AUX10,    // Button 6
-    AUX11,    // Button 7
-    AUX12     // Button 8
+    THROTTLE_X,    // Button 7
+    THROTTLE_Y     // Button 8
 };
 
 void sendRcDataToHid(void)

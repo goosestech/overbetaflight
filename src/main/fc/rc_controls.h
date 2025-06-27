@@ -31,6 +31,8 @@ typedef enum rc_alias {
     PITCH,
     YAW,
     THROTTLE,
+    THROTTLE_X,
+    THROTTLE_Y,
     AUX1,
     AUX2,
     AUX3,
@@ -40,12 +42,10 @@ typedef enum rc_alias {
     AUX7,
     AUX8,
     AUX9,
-    AUX10,
-    AUX11,
-    AUX12
+    AUX10
 } rc_alias_e;
 
-#define PRIMARY_CHANNEL_COUNT (THROTTLE + 1)
+#define PRIMARY_CHANNEL_COUNT (THROTTLE_Y + 1)
 
 typedef enum {
     THROTTLE_LOW = 0,
@@ -62,12 +62,15 @@ typedef enum {
 #define ROL_LO (1 << (2 * ROLL))
 #define ROL_CE (3 << (2 * ROLL))
 #define ROL_HI (2 << (2 * ROLL))
+
 #define PIT_LO (1 << (2 * PITCH))
 #define PIT_CE (3 << (2 * PITCH))
 #define PIT_HI (2 << (2 * PITCH))
+
 #define YAW_LO (1 << (2 * YAW))
 #define YAW_CE (3 << (2 * YAW))
 #define YAW_HI (2 << (2 * YAW))
+
 #define THR_LO (1 << (2 * THROTTLE))
 #define THR_CE (3 << (2 * THROTTLE))
 #define THR_HI (2 << (2 * THROTTLE))
@@ -83,11 +86,11 @@ typedef enum {
 // (Super) rates are constrained to [0, 100] for Betaflight rates, so values higher than 100 won't make a difference. Range extended for RaceFlight rates.
 #define CONTROL_RATE_CONFIG_RATE_MAX  255
 
-extern float rcCommand[4];
+extern float rcCommand[6];
 
 typedef struct rcSmoothingFilter_s {
     bool filterInitialized;
-    pt3Filter_t filterSetpoint[4];
+    pt3Filter_t filterSetpoint[6];
     pt3Filter_t filterRcDeflection[RP_AXIS_COUNT];
     pt3Filter_t filterFeedforward[3];
 

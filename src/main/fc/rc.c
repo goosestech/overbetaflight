@@ -60,7 +60,7 @@
 typedef float (applyRatesFn)(const int axis, float rcCommandf, const float rcCommandfAbs);
 // note that rcCommand[] is an external float
 
-static float rawSetpoint[XYZ_AXIS_COUNT];
+static float rawSetpoint[5];
 
 static float setpointRate[3], rcDeflection[3], rcDeflectionAbs[3]; // deflection range -1 to 1
 static float maxRcDeflectionAbs;
@@ -359,6 +359,7 @@ static FAST_CODE_NOINLINE void rcSmoothingSetFilterCutoffs(rcSmoothingFilter_t *
         // note that cutoff frequencies are integers, filter cutoffs won't re-calculate until there is > 1hz variation from previous cutoff
         // initialize or update the setpoint cutoff based filters
         const float setpointCutoffFrequency = smoothingData->setpointCutoffFrequency;
+        const float throttleCutoffFrequency = smoothingData->throttleCutoffFrequency;
         for (int i = 0; i < PRIMARY_CHANNEL_COUNT; i++) {
             if (i < THROTTLE) {
                 if (!smoothingData->filterInitialized) {
@@ -367,7 +368,6 @@ static FAST_CODE_NOINLINE void rcSmoothingSetFilterCutoffs(rcSmoothingFilter_t *
                     pt3FilterUpdateCutoff(&smoothingData->filterSetpoint[i], pt3FilterGain(setpointCutoffFrequency, dT));
                 }
             } else {
-                const float throttleCutoffFrequency = smoothingData->throttleCutoffFrequency;
                 if (!smoothingData->filterInitialized) {
                     pt3FilterInit(&smoothingData->filterSetpoint[i], pt3FilterGain(throttleCutoffFrequency, dT));
                 } else {
@@ -413,7 +413,7 @@ FAST_CODE_NOINLINE bool rcSmoothingAutoCalculate(void)
 
 static FAST_CODE void processRcSmoothingFilter(void)
 {
-    static FAST_DATA_ZERO_INIT float rxDataToSmooth[4];
+    static FAST_DATA_ZERO_INIT float rxDataToSmooth[6];
     static FAST_DATA_ZERO_INIT bool initialized;
     static FAST_DATA_ZERO_INIT bool calculateCutoffs;
 
@@ -763,15 +763,20 @@ FAST_CODE_NOINLINE void updateRcCommands(void)
 {
     isRxDataNew = true;
 
-    for (int axis = 0; axis < 3; axis++) {
+    for (int axis = 0; axis < 5; axis++) {
         float rc = constrainf(rcData[axis] - rxConfig()->midrc, -500.0f, 500.0f); // -500 to 500
         float rcDeadband = 0;
-        if (axis == ROLL || axis == PITCH) {
+        if (axis == ROLL || axis == PITCH || axis == THROTTLE_X || axis == THROTTLE_Y) {
             rcDeadband = rcControlsConfig()->deadband;
         } else {
             rcDeadband  = rcControlsConfig()->yaw_deadband;
             rc *= -GET_DIRECTION(rcControlsConfig()->yaw_control_reversed);
         }
+
+        if(axis == THROTTLE_Y) {
+            rc *= -1;
+        }
+
         rcCommand[axis] = fapplyDeadband(rc, rcDeadband);
     }
 
