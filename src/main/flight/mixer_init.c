@@ -266,7 +266,7 @@ const mixer_t mixers[] = {
     { 1, true,  mixerSingleProp },     // * MIXER_FLYING_WING
     { 4, false, mixerY4 },             // MIXER_Y4
     { 6, false, mixerHex6X },          // MIXER_HEX6X
-    { 8, false, mixerOctoX8 },         // MIXER_OCTOX8
+    { 8, false, mixerStackedOcto },         // MIXER_OCTOX8 { 8, false, mixerOctoX8 }, 
     { 8, false, mixerOctoFlatP },      // MIXER_OCTOFLATP
     { 8, false, mixerOctoFlatX },      // MIXER_OCTOFLATX
     { 1, true,  mixerSingleProp },     // * MIXER_AIRPLANE
@@ -283,7 +283,7 @@ const mixer_t mixers[] = {
     { 3, true,  NULL },                // MIXER_CUSTOM_TRI
     { 4, false, mixerQuadX1234 },      // MIXER_QUADX_1234
     { 8, false, mixerOctoX8P },        // MIXER_OCTOX8P
-    { 8, false, mixerStackedOcto },    // MIXER_STACKED_OCTO
+    { 8, false, mixerOctoX8 },    // MIXER_STACKED_OCTO
 };
 #endif // !USE_QUAD_MIXER_ONLY
 
